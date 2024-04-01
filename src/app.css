@@ -11,6 +11,7 @@
 	--bg-0: #181818;
 	--bg-1: #282828;
 	--bg-2: #383838;
+	--accent-0: teal;
 
 	--br: 0.5rem;
 
@@ -19,6 +20,9 @@
 
 	overflow: hidden;
 	height: 100%;
+	color-scheme: dark;
+	accent-color: var(--accent-0);
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -40,10 +44,10 @@ button {
 	padding: 1rem 3rem;
 	border-radius: var(--br);
 	font-size: inherit;
+	cursor: pointer;
 }
 
 input {
 	font: inherit;
-	color-scheme: dark;
 	background-color: var(--bg-2);
 }

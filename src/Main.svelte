@@ -3,6 +3,7 @@
 	import ColorOption from "./lib/ColorOption.svelte";
 	import Info from "./lib/Info.svelte";
 	import Menu from "./lib/Menu.svelte";
+	import NumberPicker from "./lib/NumberPicker.svelte";
 	import { type SaveData, Teams } from "./utils";
 
 	export let frozen: boolean;
@@ -34,9 +35,10 @@
 	<section class="board">
 		<Board {teams} size={board_size} {team_size} {seed} {starting_team} />
 		{#if frozen}
-			<div>Unfreeze to generate new board or change settings</div>
+			<div class="generate">Unfreeze to generate new board or change settings</div>
 		{:else}
-			<button id="generate" on:click={() => (seed = Date.now())}>Generate New Board</button>
+			<button class="generate" on:click={() => (seed = Date.now())}>Generate New Board</button
+			>
 			<br />
 		{/if}
 		<label for="freeze">
@@ -47,32 +49,33 @@
 			/>
 		</label>
 	</section>
-	<Menu disabled={frozen}>
+	<Menu disabled={frozen} open={false}>
 		<h3>Changing Settings will regenerate the board</h3>
-		<label>
-			Board Size
-			<input type="number" bind:value={board_size} />
-		</label>
-		<label>
-			Tiles per Team
-			<input type="number" bind:value={team_size} />
-		</label>
+		<div>
+			<span>Board Size</span>
+			<NumberPicker
+				bind:value={board_size}
+				max={10}
+				min={Math.ceil(Math.sqrt(num_teams * team_size + 1 + Number(starting_team > 0)))}
+			></NumberPicker>
+		</div>
+		<div>
+			<span>Tiles per Team</span>
+			<NumberPicker
+				bind:value={team_size}
+				max={Math.floor((board_size ** 2 - 1 - Number(starting_team > 0)) / num_teams)}
+			></NumberPicker>
+		</div>
 		<div class="num-teams">
 			<span>Number of teams</span>
-			<div>
-				<label>
-					<input type="radio" name="two" value={2} bind:group={num_teams} />
-					Two
-				</label>
-				<label>
-					<input type="radio" name="three" value={3} bind:group={num_teams} />
-					Three
-				</label>
-				<label>
-					<input type="radio" name="four" value={4} bind:group={num_teams} />
-					Four
-				</label>
-			</div>
+			<NumberPicker
+				bind:value={num_teams}
+				max={Math.min(
+					Math.floor((board_size ** 2 - 1 - Number(starting_team > 0)) / team_size),
+					4,
+				)}
+				min={2}
+			></NumberPicker>
 		</div>
 		<div class="starting-team">
 			<span>Starting Team <Info info="The starting team has one extra tile to guess" /></span>
@@ -92,6 +95,10 @@
 				bind:group_value={starting_team}
 			/>
 		</div>
+		<p>
+			If you cannot increase or decrease a value make sure the board can accommodate the
+			values you are attempting to set.
+		</p>
 	</Menu>
 </main>
 
@@ -108,23 +115,17 @@
 		align-items: center;
 		justify-content: center;
 	}
-	input[type="number"] {
-		width: 100%;
-		border-radius: var(--br);
-		padding: 0.5rem;
-		border: none;
-	}
 	h3 {
 		text-align: center;
 		margin: 0;
-	}
-	.num-teams div {
-		display: flex;
-		gap: 2rem;
 	}
 	.starting-team {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+	}
+	.generate {
+		height: 4.5rem;
+		margin-bottom: 1rem;
 	}
 </style>
