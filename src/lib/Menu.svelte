@@ -104,6 +104,8 @@
 				background-color: transparent;
 				margin: 1rem;
 				width: 3rem;
+				right: 0;
+				left: unset;
 			}
 		}
 		[data-open="false"] {
